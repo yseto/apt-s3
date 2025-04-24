@@ -1,0 +1,1 @@
+deb [signed-by=/etc/apt/keyrings/tester.gpg] http://s3www:8080/ mackerel contrib

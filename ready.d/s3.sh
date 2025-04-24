@@ -1,0 +1,6 @@
+#!/bin/sh
+
+awslocal s3 mb s3://incoming
+awslocal s3 mb s3://repository
+awslocal s3 mb s3://config
+

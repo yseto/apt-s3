@@ -1,0 +1,31 @@
+---
+name: test
+
+on:
+  push:
+    branches:
+    - main
+    tags:
+    - v*
+  pull_request:
+env:
+  DEBIAN_FRONTEND: noninteractive
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-go@v5
+      with:
+        go-version-file: lambda/go.mod
+        cache-dependency-path: lambda/go.sum
+    - run: |
+        curl -L -o lambda/testdata/mkr_0.60.0-1.v2_amd64.deb https://github.com/mackerelio/mkr/releases/download/v0.60.0/mkr_0.60.0-1.v2_amd64.deb
+        curl -L -o lambda/testdata/mkr_0.59.2-1.v2_amd64.deb https://github.com/mackerelio/mkr/releases/download/v0.59.2/mkr_0.59.2-1.v2_amd64.deb
+    - run: |
+        GOOS=linux GOARCH=amd64 go build -o ./bootstrap ./main.go
+        zip -0 ./handler.zip ./bootstrap
+      working-directory: lambda
+    - run: go test -v ./...
+      working-directory: lambda
+
